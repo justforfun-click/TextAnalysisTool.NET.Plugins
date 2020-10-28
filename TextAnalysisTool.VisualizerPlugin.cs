@@ -1,63 +1,9 @@
 ﻿using System;
-using System.IO;
 using System.Windows.Forms;
 
 namespace TextAnalysisTool.NET.Plugin
 {
-    /// <summary>
-    /// Interface that all TextAnalysisTool.NET plug-ins must implement
-    /// </summary>
-    internal interface ITextAnalysisToolPlugin
-    {
-        /// <summary>
-        /// Gets a meaningful string describing the type of file supported by the plug-in
-        /// </summary>
-        /// <remarks>
-        /// Used to populate the "Files of type" combo box in the Open file dialog
-        /// </remarks>
-        /// <example>
-        /// "XML Files"
-        /// </example>
-        /// <returns>descriptive string</returns>
-        string GetFileTypeDescription();
-
-        /// <summary>
-        /// Gets the file type pattern describing the type(s) of file supported by the plug-in
-        /// </summary>
-        /// <remarks>
-        /// Used to populate the "Files of type" combo box in the Open file dialog
-        /// </remarks>
-        /// <example>
-        /// "*.xml"
-        /// </example>
-        /// <returns>file type pattern</returns>
-        string GetFileTypePattern();
-
-        /// <summary>
-        /// Indicates whether the plug-in is able to parse the specified file
-        /// </summary>
-        /// <param name="fileName">full path to the file</param>
-        /// <remarks>
-        /// Called whenever a file is being opened to give the plug-in a chance to handle it;
-        /// ideally the result can be returned based solely on the file name, but it is
-        /// acceptable to open, read, and close the file if necessary
-        /// </remarks>
-        /// <returns>true iff the file is supported</returns>
-        bool IsFileTypeSupported(string fileName);
-
-        /// <summary>
-        /// Returns a TextReader instance that will be used to read the specified file
-        /// </summary>
-        /// <param name="fileName">full path to the file</param>
-        /// <remarks>
-        /// The only methods that will be called (and therefore need to be implemented) are
-        /// TextReader.ReadLine() and IDisposable.Dispose()
-        /// </remarks>
-        /// <returns>TextReader instance</returns>
-        System.IO.TextReader GetReaderForFile(string fileName);
-    }
-
-    public class LogVisualizerPlugin : ITextAnalysisToolPlugin
+    public class LogVisualizerPlugin
     {
         private bool mMenuInitialized = false;
         private Tat mTat = null;
@@ -163,26 +109,6 @@ namespace TextAnalysisTool.NET.Plugin
                 }
             }
             return null;
-        }
-
-        public string GetFileTypeDescription()
-        {
-            return null;
-        }
-
-        public string GetFileTypePattern()
-        {
-            return null;
-        }
-
-        public TextReader GetReaderForFile(string fileName)
-        {
-            return null;
-        }
-
-        public bool IsFileTypeSupported(string fileName)
-        {
-            return false;
         }
     }
 }
