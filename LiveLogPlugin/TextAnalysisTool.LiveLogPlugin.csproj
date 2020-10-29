@@ -52,5 +52,11 @@
       <Name>TextAnalysisTool.PluginBase</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\cancel-icon.png" />
+    <EmbeddedResource Include="Icons\delete-icon.png" />
+    <EmbeddedResource Include="Icons\Start-icon.png" />
+    <EmbeddedResource Include="Icons\Stop-red-icon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

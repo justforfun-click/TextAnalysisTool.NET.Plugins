@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace TextAnalysisTool.NET.Plugin
@@ -17,6 +18,7 @@ namespace TextAnalysisTool.NET.Plugin
 
         public delegate int HookProc(int nCode, IntPtr wParam, IntPtr lParam);
         public delegate void MainMenuCreatedHandler(MenuStrip mainMenu);
+        public delegate void ActionHandler();
 
         [DllImport("user32.dll", CallingConvention = CallingConvention.StdCall)]
         public static extern int SetWindowsHookEx(int idHook, HookProc lpfn, IntPtr hInstance, int threadId);
@@ -48,6 +50,7 @@ namespace TextAnalysisTool.NET.Plugin
 
         #region Events
         public event MainMenuCreatedHandler MainMenuCreated;
+        public event ActionHandler Closed;
         #endregion
 
         private Tat()
@@ -91,6 +94,8 @@ namespace TextAnalysisTool.NET.Plugin
 
                     mainForm.FormClosed += (s, e) =>
                     {
+                        Closed?.Invoke();
+
                         if (_hHook != 0)
                         {
                             UnhookWindowsHookEx(_hHook);
@@ -153,6 +158,37 @@ namespace TextAnalysisTool.NET.Plugin
             var lineCollection = _lineCollectionConstructor.Invoke(new[] { reader });
             _lineCollectionField.SetValue(_tat, lineCollection);
             _linesChangedMethod.Invoke(_tat, null);
+        }
+
+        public void AddToolStrip(ToolStrip toolStrip)
+        {
+            if (_mainForm?.Controls != null)
+            {
+                if (!_mainForm.Controls.Contains(toolStrip))
+                {
+                    for (var i = 0; i < _mainForm.Controls.Count; ++i)
+                    {
+                        if (_mainForm.Controls[i] is MenuStrip)
+                        {
+                            var menuStrip = _mainForm.Controls[i];
+                            _mainForm.Controls.RemoveAt(i);
+                            _mainForm.Controls.Add(toolStrip);
+                            _mainForm.Controls.Add(menuStrip);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        public void RemoveToolStrip(ToolStrip toolStrip)
+        {
+            _mainForm?.Controls.Remove(toolStrip);
+        }
+
+        public void RunAtMainThread(Action action)
+        {
+            _mainForm.Invoke(action);
         }
 
         private Form _mainForm;
