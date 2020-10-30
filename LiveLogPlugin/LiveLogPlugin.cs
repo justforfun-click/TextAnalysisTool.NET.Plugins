@@ -102,6 +102,14 @@ namespace TextAnalysisTool.NET.Plugin
                 ts.Items.Add(_stopBtn);
                 ts.Items.Add(_cleanBtn);
                 ts.Items.Add(_closeBtn);
+
+                // Add bug report btn.
+                var bugReportBtn = new ToolStripButton(Image.FromStream(assembly.GetManifestResourceStream(resNames.Single(str => str.EndsWith("bug_error.png")))));
+                bugReportBtn.ToolTipText = "report bug!";
+                bugReportBtn.Click += (s, e) => _tat.OpenReportPluginsIssueLink();
+                ts.Items.Add(bugReportBtn);
+
+                // Save
                 _toolbar = ts;
             }
             Tat.Instance.AddToolStrip(_toolbar);

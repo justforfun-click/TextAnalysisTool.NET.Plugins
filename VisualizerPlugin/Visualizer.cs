@@ -416,5 +416,10 @@ namespace TextAnalysisTool.NET.Plugin
             showMultipleAxesBtn.Checked = !showMultipleAxesBtn.Checked;
             ReloadLogLines();
         }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            Tat.Instance.OpenReportPluginsIssueLink();
+        }
     }
 }

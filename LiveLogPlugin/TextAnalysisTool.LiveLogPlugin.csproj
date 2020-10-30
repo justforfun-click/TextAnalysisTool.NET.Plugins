@@ -58,5 +58,8 @@
     <EmbeddedResource Include="Icons\Start-icon.png" />
     <EmbeddedResource Include="Icons\Stop-red-icon.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\bug_error.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

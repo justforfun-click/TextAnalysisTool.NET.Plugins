@@ -210,6 +210,11 @@ namespace TextAnalysisTool.NET.Plugin
             }
         }
 
+        public void OpenReportPluginsIssueLink()
+        {
+            Process.Start("https://github.com/justforfun-click/TextAnalysisTool.NET.Plugins/issues");
+        }
+
         private Form _mainForm;
         private bool _isMainMenuHooked;
         private int _hHook;
