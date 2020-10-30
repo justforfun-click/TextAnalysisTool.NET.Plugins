@@ -37,6 +37,7 @@
             this.reloadParserBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.copyBtn = new System.Windows.Forms.ToolStripButton();
+            this.showMultipleAxesBtn = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.plotPanel = new System.Windows.Forms.Panel();
             this.parsersListView = new System.Windows.Forms.ListView();
@@ -58,7 +59,8 @@
             this.reloadBtn,
             this.reloadParserBtn,
             this.toolStripSeparator2,
-            this.copyBtn});
+            this.copyBtn,
+            this.showMultipleAxesBtn});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1093, 25);
@@ -129,6 +131,19 @@
             this.copyBtn.Text = "toolStripButton1";
             this.copyBtn.ToolTipText = "Copy Graph (Ctrl + C)";
             this.copyBtn.Click += new System.EventHandler(this.copyBtn_Click);
+            // 
+            // showMultipleAxesBtn
+            // 
+            this.showMultipleAxesBtn.Checked = true;
+            this.showMultipleAxesBtn.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.showMultipleAxesBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.showMultipleAxesBtn.Image = ((System.Drawing.Image)(resources.GetObject("showMultipleAxesBtn.Image")));
+            this.showMultipleAxesBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.showMultipleAxesBtn.Name = "showMultipleAxesBtn";
+            this.showMultipleAxesBtn.Size = new System.Drawing.Size(23, 22);
+            this.showMultipleAxesBtn.Text = "toolStripButton1";
+            this.showMultipleAxesBtn.ToolTipText = "Show Multiple Axes";
+            this.showMultipleAxesBtn.Click += new System.EventHandler(this.showMultipleAxesBtn_Click);
             // 
             // splitContainer1
             // 
@@ -226,5 +241,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton copyBtn;
+        private System.Windows.Forms.ToolStripButton showMultipleAxesBtn;
     }
 }

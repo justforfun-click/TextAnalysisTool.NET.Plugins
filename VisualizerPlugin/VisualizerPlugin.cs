@@ -36,19 +36,7 @@ namespace TextAnalysisTool.NET.Plugin
             {
                 _visualizer = new Visualizer(_tat);
             }
-
-            if (_visualizer.Visible)
-            {
-                if (_visualizer.WindowState == FormWindowState.Minimized)
-                {
-                    _visualizer.WindowState = FormWindowState.Normal;
-                }
-                _visualizer.BringToFront();
-            }
-            else
-            {
-                _visualizer.Show();
-            }
+            _tat.Show(_visualizer);
         }
 
         private ToolStripMenuItem FindMenuItem(MenuStrip menu, string menuText)

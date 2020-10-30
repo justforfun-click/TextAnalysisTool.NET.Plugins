@@ -194,9 +194,48 @@ namespace TextAnalysisTool.NET.Plugin
                     Axes =
                     {
                         new DateTimeAxis()
-                    }
+                        {
+                            TickStyle = OxyPlot.Axes.TickStyle.Inside,
+                            Position = AxisPosition.Bottom,
+                            MajorGridlineStyle = LineStyle.Solid,
+                            MinorGridlineStyle = LineStyle.Dot
+                        }
+                    },
+                    LegendPlacement = LegendPlacement.Outside,
+                    LegendPosition = LegendPosition.BottomCenter,
+                    LegendOrientation = LegendOrientation.Horizontal,
                 };
+
+                if (!showMultipleAxesBtn.Checked)
+                {
+                    plot.Model.Axes.Add(new LinearAxis()
+                    {
+                        TickStyle = OxyPlot.Axes.TickStyle.Inside,
+                        Position = AxisPosition.Left,
+                        MajorGridlineStyle = LineStyle.Solid,
+                        MinorGridlineStyle = LineStyle.Dot,
+                    });
+                }
             }
+
+            if (showMultipleAxesBtn.Checked)
+            {
+                var color = plot.Model.DefaultColors[plot.Model.Series.Count % plot.Model.DefaultColors.Count];
+                var linearAxis = new LinearAxis()
+                {
+                    Key = parserType.FullName,
+                    TickStyle = OxyPlot.Axes.TickStyle.Inside,
+                    Position = AxisPosition.Left,
+                    PositionTier = plot.Model.Series.Count,
+                    Title = parser.GetLabel(),
+                    TitleColor = color,
+                    AxislineColor = color,
+                    AxislineStyle = LineStyle.Solid,
+                };
+                plot.Model.Axes.Add(linearAxis);
+                lineSeries.YAxisKey = parserType.FullName;
+            }
+
             plot.Model.Series.Add(lineSeries);
 
             if (redraw)
@@ -216,6 +255,12 @@ namespace TextAnalysisTool.NET.Plugin
             if (it != null)
             {
                 plot.Model.Series.Remove(it);
+            }
+
+            var axis = plot.Model.Axes.FirstOrDefault(a => a.Key == parserType.FullName);
+            if (axis != null)
+            {
+                plot.Model.Axes.Remove(axis);
             }
 
             if (plot.Model.Series.Count == 0)
@@ -364,6 +409,12 @@ namespace TextAnalysisTool.NET.Plugin
         private void copyBtn_Click(object sender, EventArgs e)
         {
             CopyGraphToClipboard();
+        }
+
+        private void showMultipleAxesBtn_Click(object sender, EventArgs e)
+        {
+            showMultipleAxesBtn.Checked = !showMultipleAxesBtn.Checked;
+            ReloadLogLines();
         }
     }
 }

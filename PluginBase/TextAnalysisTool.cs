@@ -191,6 +191,25 @@ namespace TextAnalysisTool.NET.Plugin
             _mainForm.Invoke(action);
         }
 
+        public void Show(Form window)
+        {
+            if (window.Visible)
+            {
+                if (window.WindowState == FormWindowState.Minimized)
+                {
+                    window.WindowState = FormWindowState.Normal;
+                }
+                window.BringToFront();
+            }
+            else
+            {
+                window.StartPosition = FormStartPosition.Manual;
+                window.Top = _mainForm.Top + (_mainForm.Height - window.Height) / 2;
+                window.Left = _mainForm.Left + (_mainForm.Width - window.Width) / 2;
+                window.Show();
+            }
+        }
+
         private Form _mainForm;
         private bool _isMainMenuHooked;
         private int _hHook;
