@@ -67,6 +67,7 @@ namespace TextAnalysisTool.NET.Plugin
             }
             if (ok)
             {
+                LoadFilters();
                 Application.Idle -= Application_Idle;
             }
         }
@@ -84,11 +85,14 @@ namespace TextAnalysisTool.NET.Plugin
                 if (mainForm != null)
                 {
                     _tat = mainForm.GetType().GetField("m_textAnalysisTool", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(mainForm);
+                    _loadFiltersFromFileMethod = _tat.GetType().GetMethod("LoadFiltersFromFile");
                     _linesChangedMethod = _tat.GetType().GetMethod("LinesChanged");
                     var lineCollectionType = _tat.GetType().Assembly.GetType("TextAnalysisTool.NET.LineCollection");
                     _lineCollectionConstructor = lineCollectionType.GetConstructor(new[] { typeof(TextReader) });
                     _lineCollectionField = _tat.GetType().GetField("m_lineCollection", BindingFlags.NonPublic | BindingFlags.Instance);
                     _lineCollectionDisplay = (ListBox)_tat.GetType().GetField("m_lineCollectionDisplay", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(_tat);
+                    _filterCollection = _tat.GetType().GetField("m_filterCollection", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(_tat);
+                    _filterCollectionClearDirtyFlagMethod = _filterCollection.GetType().GetMethod("ClearDirtyFlag");
                     _hookProc = new HookProc(OnListBox_SetCount);
                     _hHook = SetWindowsHookEx(12, _hookProc, (IntPtr)0, GetCurrentWin32ThreadId());
 
@@ -220,10 +224,13 @@ namespace TextAnalysisTool.NET.Plugin
         private int _hHook;
         private HookProc _hookProc;
         private object _tat;
+        private object _filterCollection;
         private ListBox _lineCollectionDisplay;
         private ConstructorInfo _lineCollectionConstructor;
         private FieldInfo _lineCollectionField;
         private MethodInfo _linesChangedMethod;
+        private MethodInfo _loadFiltersFromFileMethod;
+        private MethodInfo _filterCollectionClearDirtyFlagMethod;
 
         // Tat uses MeasureString() to caculate the width of the horizontal scroll bar. That api has a bug that it can't return the enough width of the string for some font and font size.
         // The work around here is hooking LB_SETCOUNT(423) message and invoke MeasureString() with a bigger font size.
@@ -240,6 +247,16 @@ namespace TextAnalysisTool.NET.Plugin
                 }
             }
             return CallNextHookEx(0, nCode, wParam, lParam);
+        }
+
+        private void LoadFilters()
+        {
+            // Automatically load filter under `<assembly>` folder.
+            foreach (var file in Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "*.tat"))
+            {
+                _loadFiltersFromFileMethod.Invoke(_tat, new object[] { file, /*replaceFilters=*/false });
+            }
+            _filterCollectionClearDirtyFlagMethod.Invoke(_filterCollection, null);
         }
     }
 }
