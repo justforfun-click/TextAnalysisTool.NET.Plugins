@@ -1,0 +1,58 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1
+      - name: Add nuget to PATH
+        uses: nuget/setup-nuget@v1
+      - name: Restore nuget packages
+        run: nuget restore TextAnalysisTool.NET.Plugins.sln
+      - name: Build release
+        run: msbuild TextAnalysisTool.NET.Plugins.sln /p:Configuration=Release
+      - run: cmd /k publish.cmd
+      - name: Upload binaries
+        uses: actions/upload-artifact@v2
+        with:
+          name: binaries
+          path: bin\\publish\\*
+
+  create_release:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete old drafts
+        uses: hugo19941994/delete-draft-releases@v0.1.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create draft release
+        uses: release-drafter/release-drafter@v5
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Download binaries
+        uses: actions/download-artifact@v1
+        with:
+          name: binaries
+      - name: Zip files
+        uses: edgarrc/action-7z@v1.0.4
+        with:
+          args: 7z a tat-with-plugins-latest.7z ./binaries/*
+      - name: Publish binaries as release assets
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: tat-with-plugins-latest.7z
+          asset_name: tat-with-plugins-latest.7z
+          asset_content_type: pplication/x-7z-compressed
